@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace APIRestCustomSales {
     public class Startup {
@@ -21,6 +22,12 @@ namespace APIRestCustomSales {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            services.Configure<DatabaseSettings>(
+                Configuration.GetSection(nameof(DatabaseSettings)));
+
+            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
             services.AddControllers();
         }
 
