@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace APIRestCustomSales {
 
-    interface IDatabaseSettings {
+    public interface IDatabaseSettings {
 
         string ConnectionString { get; set; }
         string DatabaseName { get; set; }
+        string ProductsCollectionName { get; set; }
     }
 }

@@ -18,5 +18,8 @@ namespace APIRestCustomSales.Models {
         public float Price { get; set; }
 
         public int Stock { get; set; }
+
+        [BsonIgnoreIfNull]
+        public string ImageUrl { get; set; }
     }
 }

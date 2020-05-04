@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRestCustomSales.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,8 @@ namespace APIRestCustomSales {
 
             services.AddSingleton<IDatabaseSettings>(serviceProvider =>
                 serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
+            services.AddSingleton<ProductsService>();
 
             services.AddControllers();
         }
