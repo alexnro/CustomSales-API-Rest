@@ -15,6 +15,9 @@ using Microsoft.Extensions.Options;
 
 namespace APIRestCustomSales {
     public class Startup {
+
+        private readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
@@ -23,6 +26,14 @@ namespace APIRestCustomSales {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            services.AddCors(options => {
+                options.AddPolicy(
+                    name: AllowSpecificOrigins,
+                    builder => {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();        
+                    });
+            });
+
             services.Configure<DatabaseSettings>(
                 Configuration.GetSection(nameof(DatabaseSettings)));
 
@@ -43,6 +54,8 @@ namespace APIRestCustomSales {
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(AllowSpecificOrigins);
 
             app.UseAuthorization();
 
