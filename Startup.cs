@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace APIRestCustomSales {
     public class Startup {
@@ -41,6 +42,9 @@ namespace APIRestCustomSales {
                 serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
             services.AddSingleton<ProductsService>();
+
+            services.AddControllers()
+               .AddNewtonsoftJson(options => options.UseMemberCasing());
 
             services.AddControllers();
         }
