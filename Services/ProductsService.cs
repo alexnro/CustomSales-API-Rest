@@ -22,9 +22,17 @@ namespace APIRestCustomSales.Services {
             return _products.Find(product => true).ToList();
         }
 
+        public Product GetById(string id) {
+            return _products.Find(product => product.Id == id).FirstOrDefault();
+        }
+
         public Product Create(Product product) {
             _products.InsertOne(product);
             return product;
+        }
+
+        public void Delete(string productId) {
+            _products.DeleteOne(product => product.Id == productId);
         }
     }
 }

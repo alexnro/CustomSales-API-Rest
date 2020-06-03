@@ -29,5 +29,17 @@ namespace APIRestCustomSales.Controllers {
             _productsService.Create(product);
             return CreatedAtRoute(new { id = product.Id.ToString() }, product);
         }
+
+        [HttpDelete]
+        public IActionResult Delete(string productId) {
+            var product = _productsService.GetById(productId);
+
+            if (product == null) {
+                return NotFound();
+            }
+
+            _productsService.Delete(productId);
+            return NoContent();
+        }
     }
 }
