@@ -30,6 +30,19 @@ namespace APIRestCustomSales.Controllers {
             return CreatedAtRoute(new { id = product.Id.ToString() }, product);
         }
 
+        [HttpPut]
+        public IActionResult Update(Product updatedProduct) {
+            var product = _productsService.GetById(updatedProduct.Id);
+
+            if (product == null) {
+                return NotFound();
+            }
+
+            _productsService.Update(updatedProduct);
+            return NoContent();
+
+        }
+
         [HttpDelete]
         public IActionResult Delete(string productId) {
             var product = _productsService.GetById(productId);

@@ -31,6 +31,10 @@ namespace APIRestCustomSales.Services {
             return product;
         }
 
+        public void Update(Product updatedProduct) {
+            _products.ReplaceOne(product => product.Id == updatedProduct.Id, updatedProduct);
+        }
+
         public void Delete(string productId) {
             _products.DeleteOne(product => product.Id == productId);
         }
