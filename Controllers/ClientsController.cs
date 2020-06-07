@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using APIRestCustomSales.Services;
+using APIRestCustomSales.Models;
+
+namespace APIRestCustomSales.Controllers {
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ClientsController : ControllerBase {
+
+        private readonly ClientsService _clientsService;
+
+        public ClientsController(ClientsService clientsService) {
+            _clientsService = clientsService;
+        }
+
+        [HttpGet]
+        public ActionResult<List<Client>> Get() {
+            return _clientsService.Get();
+        }
+
+    }
+}

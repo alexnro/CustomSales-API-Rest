@@ -19,6 +19,5 @@ namespace APIRestCustomSales.Models {
 
         public string PhoneNumber { get; set; }
 
-        public RoleType Role { get; set; }
     }
 }
