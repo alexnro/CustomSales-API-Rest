@@ -24,5 +24,13 @@ namespace APIRestCustomSales.Controllers {
             return _clientsService.Get();
         }
 
+
+        [HttpGet]
+        [Route("{id}")]
+        public ActionResult<Client> GetById(string id) {
+            return _clientsService.GetById(id);
+        }
+
+
     }
 }
