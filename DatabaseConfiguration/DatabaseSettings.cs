@@ -10,5 +10,6 @@ namespace APIRestCustomSales {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
         public string ProductsCollectionName { get; set; }
+        public string ClientsCollectionName { get; set; }
     }
 }
