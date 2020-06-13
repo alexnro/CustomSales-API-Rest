@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using APIRestCustomSales.Models;
 using APIRestCustomSales.Services;
@@ -24,10 +25,9 @@ namespace APIRestCustomSales.Controllers {
             return _usersService.GetUsers();
         }
 
-        [HttpGet]
-        [Route("{name}")]
-        public ActionResult<User> GetByName(string name) {
-            return _usersService.GetUserByName(name);
+        [HttpGet("login")]
+        public ActionResult<User> GetByName([FromBody] LoginUser loginUser) {
+            return _usersService.HandleLogin(loginUser);
         }
 
     }
