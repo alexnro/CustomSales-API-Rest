@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using APIRestCustomSales.Services;
 using APIRestCustomSales.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIRestCustomSales.Controllers {
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ClientsController : ControllerBase {

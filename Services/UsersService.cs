@@ -1,11 +1,17 @@
+using APIRestCustomSales.Auth;
 using APIRestCustomSales.Models;
 using APIRestCustomSales.Utils;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace APIRestCustomSales.Services {
@@ -13,25 +19,32 @@ namespace APIRestCustomSales.Services {
     public class UsersService {
 
         private readonly IMongoCollection<User> _users;
+        private readonly AuthSettings _authSettings;
 
-        public UsersService(IDatabaseSettings settings) {
+        public UsersService(IDatabaseSettings settings, IOptions<AuthSettings> authSettings) {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _users = database.GetCollection<User>(settings.UsersCollectionName);
+            _authSettings = authSettings.Value;
         }
 
         public List<User> GetUsers() {
             return _users.Find(user => true).ToList();
         }
 
+        public User GetUserByUsername(string username) {
+            return _users.Find(user => user.Username == username).FirstOrDefault();
+        }
+
         public User HandleLogin(LoginUser loginUser) {
-            var user = _users.Find(user => user.Username == loginUser.Username).FirstOrDefault();
+            var user = GetUserByUsername(loginUser.Username);
             if (user != null && ComparePasswordWithEncrypt(user, loginUser.Password)) {
-                // Return only minimum data to avoid having access to
-                // password or encryption keys in client-side
-                var returnedUser = new User(user.Id, user.Username, user.Email, user.Role);
-                return returnedUser;
+                var tokenUser = Authenticate(loginUser);
+
+                if (tokenUser == null) return null;
+
+                return tokenUser;
             }
             return null;
         }
@@ -56,6 +69,34 @@ namespace APIRestCustomSales.Services {
                 updatedUser.EncryptionIV = rijndael.IV;
                 _users.ReplaceOne(user => user.Username == loginUser.Username, updatedUser);
             }
+        }
+
+        public User Authenticate(LoginUser loginUser) {
+            var user = GetUserByUsername(loginUser.Username);
+
+            if (user == null) return null;
+
+            var token = GenerateJwtToken(user);
+            var updatedUser = user;
+            updatedUser.Token = token;
+            _users.ReplaceOne(user => user.Username == loginUser.Username, updatedUser);
+
+            return user;
+        }
+
+        private string GenerateJwtToken(User user) {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_authSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor {
+                Subject = new ClaimsIdentity(new Claim[] {
+                    new Claim(ClaimTypes.Name, user.Id)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
     }

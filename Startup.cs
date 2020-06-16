@@ -13,6 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using APIRestCustomSales.Auth;
+using System.Text;
 
 namespace APIRestCustomSales {
     public class Startup {
@@ -31,7 +35,7 @@ namespace APIRestCustomSales {
                 options.AddPolicy(
                     name: AllowSpecificOrigins,
                     builder => {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();        
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                     });
             });
 
@@ -51,6 +55,27 @@ namespace APIRestCustomSales {
                .AddNewtonsoftJson(options => options.UseMemberCasing());
 
             services.AddControllers();
+
+            var authSettingsSection = Configuration.GetSection(nameof(AuthSettings));
+            services.Configure<AuthSettings>(authSettingsSection);
+
+            var authSettings = authSettingsSection.Get<AuthSettings>();
+            var key = Encoding.ASCII.GetBytes(authSettings.Secret);
+            services.AddAuthentication(authBuilder => {
+                authBuilder.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                authBuilder.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(configOptions => {
+                configOptions.RequireHttpsMetadata = false;
+                configOptions.SaveToken = true;
+                configOptions.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +89,8 @@ namespace APIRestCustomSales {
             app.UseRouting();
 
             app.UseCors(AllowSpecificOrigins);
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
