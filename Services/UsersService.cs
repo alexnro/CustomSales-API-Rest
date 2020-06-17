@@ -53,6 +53,11 @@ namespace APIRestCustomSales.Services {
             return null;
         }
 
+        public void HandleLogout(User logoutUser) {
+            logoutUser.Token = null;
+            _users.ReplaceOne(user => user.Username == logoutUser.Username, logoutUser);
+        }
+
         public bool ComparePasswordWithEncrypt(User user, string password) {
             string roundtrip = EncryptionHelper.DecryptStringFromBytes(user.Password, user.EncryptionKey, user.EncryptionIV);
 

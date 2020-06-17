@@ -38,6 +38,18 @@ namespace APIRestCustomSales.Controllers {
             return _usersService.GetUserByToken(tokenAuth.Token);
         }
 
+        [HttpPut("logout")]
+        public IActionResult Logout([FromBody] LogoutUser logoutUser) {
+            var user = _usersService.GetUserByUsername(logoutUser.Username);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            _usersService.HandleLogout(user);
+            return NoContent();
+        }
+
     }
 
 }
