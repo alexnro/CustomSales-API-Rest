@@ -33,6 +33,11 @@ namespace APIRestCustomSales.Controllers {
             return _usersService.HandleLogin(loginUser);
         }
 
+        [HttpPost("authenticate")]
+        public ActionResult<User> GetAuthUser([FromBody] TokenAuth tokenAuth) {
+            return _usersService.GetUserByToken(tokenAuth.Token);
+        }
+
     }
 
 }

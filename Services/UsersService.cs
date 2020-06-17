@@ -37,6 +37,10 @@ namespace APIRestCustomSales.Services {
             return _users.Find(user => user.Username == username).FirstOrDefault();
         }
 
+        public User GetUserByToken(string token) {
+            return _users.Find(user => user.Token != null && user.Token == token).FirstOrDefault();
+        }
+
         public User HandleLogin(LoginUser loginUser) {
             var user = GetUserByUsername(loginUser.Username);
             if (user != null && ComparePasswordWithEncrypt(user, loginUser.Password)) {
