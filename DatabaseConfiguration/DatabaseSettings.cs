@@ -12,5 +12,6 @@ namespace APIRestCustomSales {
         public string ProductsCollectionName { get; set; }
         public string ClientsCollectionName { get; set; }
         public string UsersCollectionName { get; set; }
+        public string OrdersCollectionName { get; set; }
     }
 }

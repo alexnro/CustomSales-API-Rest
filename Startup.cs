@@ -51,6 +51,8 @@ namespace APIRestCustomSales {
 
             services.AddSingleton<UsersService>();
 
+            services.AddSingleton<OrdersService>();
+
             services.AddControllers()
                .AddNewtonsoftJson(options => options.UseMemberCasing());
 
