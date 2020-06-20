@@ -6,18 +6,22 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace APIRestCustomSales.Models {
-
-    public class Order {
+    public class OrderProduct {
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        public string ClientName { get; set; }
+        public string Name { get; set; }
 
-        public List<OrderProduct> Products { get; set; }
+        public double Price { get; set; }
 
-        public double TotalPrice { get; set; }
+        public int Stock { get; set; }
+
+        public int Quantity { get; set; }
+
+        [BsonIgnoreIfNull]
+        public string ImageUrl { get; set; }
 
     }
 }
