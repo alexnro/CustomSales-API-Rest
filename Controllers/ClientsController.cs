@@ -33,6 +33,17 @@ namespace APIRestCustomSales.Controllers {
             return _clientsService.GetById(id);
         }
 
+        [HttpPost]
+        public ActionResult<Client> AddClient(Client newClient) {
+            var client = _clientsService.GetByName(newClient.Name);
+
+            if (client != null) {
+                return NoContent();
+            }
+
+            _clientsService.Create(newClient);
+            return CreatedAtRoute(new { id = newClient.Id.ToString() }, newClient);
+        }
 
     }
 }
