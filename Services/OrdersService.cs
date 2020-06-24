@@ -22,9 +22,17 @@ namespace APIRestCustomSales.Services {
             return _orders.Find(order => true).ToList();
         }
 
+        public Order GetOrderById(string orderId) {
+            return _orders.Find(order => order.Id == orderId).FirstOrDefault();
+        }
+
         public Order AddOrder(Order order) {
             _orders.InsertOne(order);
             return order;
+        }
+
+        public void DeleteOrder(string orderId) {
+            _orders.DeleteOne(order => order.Id == orderId);
         }
 
     }
