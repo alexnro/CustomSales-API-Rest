@@ -45,5 +45,17 @@ namespace APIRestCustomSales.Controllers {
             return CreatedAtRoute(new { id = newClient.Id.ToString() }, newClient);
         }
 
+        [HttpPut]
+        public IActionResult Update(Client updatedClient) {
+            var client = _clientsService.GetById(updatedClient.Id);
+
+            if (client == null) {
+                return NotFound();
+            }
+
+            _clientsService.Update(updatedClient);
+            return NoContent();
+        }
+
     }
 }

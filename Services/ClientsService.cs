@@ -30,9 +30,12 @@ namespace APIRestCustomSales.Services {
             return _clients.Find(client => client.Name == clientName).FirstOrDefault();
         }
 
-        public Client Create(Client client) {
+        public void Create(Client client) {
             _clients.InsertOne(client);
-            return client;
+        }
+
+        public void Update(Client updatedClient) {
+            _clients.ReplaceOne(client => client.Id == updatedClient.Id, updatedClient);
         }
     }
 }
