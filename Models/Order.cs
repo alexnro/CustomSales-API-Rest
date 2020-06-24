@@ -13,7 +13,7 @@ namespace APIRestCustomSales.Models {
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        public string ClientName { get; set; }
+        public Client Client { get; set; }
 
         public List<OrderProduct> Products { get; set; }
 
