@@ -57,5 +57,17 @@ namespace APIRestCustomSales.Controllers {
             return NoContent();
         }
 
+        [HttpDelete]
+        public IActionResult Delete(string clientId) {
+            var client = _clientsService.GetById(clientId);
+
+            if (client == null) {
+                return NotFound();
+            }
+
+            _clientsService.Delete(clientId);
+            return NoContent();
+        }
+
     }
 }

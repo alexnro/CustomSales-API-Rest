@@ -37,5 +37,9 @@ namespace APIRestCustomSales.Services {
         public void Update(Client updatedClient) {
             _clients.ReplaceOne(client => client.Id == updatedClient.Id, updatedClient);
         }
+
+        public void Delete(string clientId) {
+            _clients.DeleteOne(client => client.Id == clientId);
+        }
     }
 }
