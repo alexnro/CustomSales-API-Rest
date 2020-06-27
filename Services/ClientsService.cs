@@ -10,12 +10,14 @@ namespace APIRestCustomSales.Services {
     public class ClientsService {
 
         private readonly IMongoCollection<Client> _clients;
+        private readonly IMongoCollection<Product> _products;
 
         public ClientsService(IDatabaseSettings settings) {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _clients = database.GetCollection<Client>(settings.ClientsCollectionName);
+            _products = database.GetCollection<Product>(settings.ProductsCollectionName);
         }
 
         public List<Client> Get() {
@@ -31,6 +33,7 @@ namespace APIRestCustomSales.Services {
         }
 
         public void Create(Client client) {
+            client.VisibleProducts = GetProducts();
             _clients.InsertOne(client);
         }
 
@@ -40,6 +43,11 @@ namespace APIRestCustomSales.Services {
 
         public void Delete(string clientId) {
             _clients.DeleteOne(client => client.Id == clientId);
+        }
+
+        public List<Product> GetProducts() {
+            var products = _products.Find(product => true).ToList();
+            return products;
         }
     }
 }
