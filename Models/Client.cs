@@ -19,6 +19,8 @@ namespace APIRestCustomSales.Models {
 
         public string PhoneNumber { get; set; }
 
+        public double PriceVariation { get; set; }
+
         public List<Product> VisibleProducts { get; set; }
 
     }

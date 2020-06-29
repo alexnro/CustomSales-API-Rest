@@ -34,10 +34,12 @@ namespace APIRestCustomSales.Services {
 
         public void Create(Client client) {
             client.VisibleProducts = GetProducts();
+            client = CalculatePriceVariations(client);
             _clients.InsertOne(client);
         }
 
         public void Update(Client updatedClient) {
+            updatedClient = CalculatePriceVariations(updatedClient);
             _clients.ReplaceOne(client => client.Id == updatedClient.Id, updatedClient);
         }
 
@@ -46,8 +48,21 @@ namespace APIRestCustomSales.Services {
         }
 
         public List<Product> GetProducts() {
-            var products = _products.Find(product => true).ToList();
-            return products;
+            return _products.Find(product => true).ToList();
+        }
+
+        private Client CalculatePriceVariations(Client client) {
+            foreach (Product product in GetProducts()) {
+                Product availableProduct = client.VisibleProducts.Find(visibleProduct => visibleProduct.Id == product.Id);
+                if (availableProduct != null) {
+                    if (client.PriceVariation != 0d) {
+                        availableProduct.Price = Math.Round(product.Price * (1 + client.PriceVariation / 100), 2);
+                    } else {
+                        availableProduct.Price = product.Price;
+                    }
+                }
+            }
+            return client;
         }
     }
 }
