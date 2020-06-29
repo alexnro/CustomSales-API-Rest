@@ -46,7 +46,7 @@ namespace APIRestCustomSales.Controllers {
         }
 
         [HttpPut]
-        public IActionResult Update(Client updatedClient) {
+        public ActionResult<Client> Update(Client updatedClient) {
             var client = _clientsService.GetById(updatedClient.Id);
 
             if (client == null) {
@@ -54,7 +54,7 @@ namespace APIRestCustomSales.Controllers {
             }
 
             _clientsService.Update(updatedClient);
-            return NoContent();
+            return updatedClient;
         }
 
         [HttpDelete]

@@ -52,6 +52,11 @@ namespace APIRestCustomSales.Services {
         }
 
         private Client CalculatePriceVariations(Client client) {
+            if (client.VisibleProducts == null) {
+                var products = GetById(client.Id).VisibleProducts;
+                client.VisibleProducts = products;
+            }
+
             foreach (Product product in GetProducts()) {
                 Product availableProduct = client.VisibleProducts.Find(visibleProduct => visibleProduct.Id == product.Id);
                 if (availableProduct != null) {
