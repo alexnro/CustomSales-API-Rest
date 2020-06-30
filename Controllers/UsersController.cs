@@ -27,6 +27,15 @@ namespace APIRestCustomSales.Controllers {
             return _usersService.GetUsers();
         }
 
+        [HttpPost]
+        public ActionResult<User> Create(User newUser) {
+            if (_usersService.GetUserByUsername(newUser.Username) != null) {
+                return NoContent();
+            }
+
+            return _usersService.AddUser(newUser);
+        }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult<User> GetByName([FromBody] LoginUser loginUser) {
@@ -38,6 +47,16 @@ namespace APIRestCustomSales.Controllers {
             return _usersService.GetUserByToken(tokenAuth.Token);
         }
 
+        [HttpPut]
+        public IActionResult Update(User updatedUser) {
+            if (_usersService.GetUserById(updatedUser.Id) == null) {
+                return NotFound();
+            }
+
+            _usersService.Update(updatedUser);
+            return NoContent();
+        }
+
         [HttpPut("logout")]
         public IActionResult Logout([FromBody] LogoutUser logoutUser) {
             var user = _usersService.GetUserByUsername(logoutUser.Username);
@@ -47,6 +66,18 @@ namespace APIRestCustomSales.Controllers {
             }
 
             _usersService.HandleLogout(user);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(string userId) {
+            var user = _usersService.GetUserById(userId);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            _usersService.Delete(userId);
             return NoContent();
         }
 

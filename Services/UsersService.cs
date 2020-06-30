@@ -41,6 +41,23 @@ namespace APIRestCustomSales.Services {
             return _users.Find(user => user.Token != null && user.Token == token).FirstOrDefault();
         }
 
+        public User GetUserById(string userId) {
+            return _users.Find(user => user.Id == userId).FirstOrDefault();
+        }
+
+        public User AddUser(User newUser) {
+            _users.InsertOne(newUser);
+            return newUser;
+        }
+
+        public void Update(User updatedUser) {
+            _users.ReplaceOne(user => user.Id == updatedUser.Id, updatedUser);
+        }
+
+        public void Delete(string userId) {
+            _users.DeleteOne(user => user.Id == userId);
+        }
+
         public User HandleLogin(LoginUser loginUser) {
             var user = GetUserByUsername(loginUser.Username);
             if (user != null && ComparePasswordWithEncrypt(user, loginUser.Password)) {
