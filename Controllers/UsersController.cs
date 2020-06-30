@@ -44,7 +44,11 @@ namespace APIRestCustomSales.Controllers {
 
         [HttpPost("authenticate")]
         public ActionResult<User> GetAuthUser([FromBody] TokenAuth tokenAuth) {
-            return _usersService.GetUserByToken(tokenAuth.Token);
+            User user = _usersService.GetUserByToken(tokenAuth.Token);
+
+            if (user.Password == null) return null;
+
+            return user;
         }
 
         [HttpPut]
@@ -66,6 +70,17 @@ namespace APIRestCustomSales.Controllers {
             }
 
             _usersService.HandleLogout(user);
+            return NoContent();
+        }
+
+        [HttpPut("resetPassword")]
+        public IActionResult ResetPassword(User userToReset) {
+            var user = _usersService.GetUserById(userToReset.Id);
+            if (user.Id == null) {
+                return NotFound();
+            }
+
+            _usersService.ResetPassword(user);
             return NoContent();
         }
 
