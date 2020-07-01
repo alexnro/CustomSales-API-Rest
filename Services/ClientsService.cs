@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRestCustomSales.Models;
+using APIRestCustomSales.Utils;
 using MongoDB.Driver;
 
 namespace APIRestCustomSales.Services {
@@ -34,12 +35,14 @@ namespace APIRestCustomSales.Services {
 
         public void Create(Client client) {
             client.VisibleProducts = GetProducts();
-            client = CalculatePriceVariations(client);
+            var priceCalculator = new ClientsProductsHelper(_products);
+            client = priceCalculator.CalculatePriceVariations(client);
             _clients.InsertOne(client);
         }
 
         public void Update(Client updatedClient) {
-            updatedClient = CalculatePriceVariations(updatedClient);
+            var priceCalculator = new ClientsProductsHelper(_products);
+            updatedClient = priceCalculator.CalculatePriceVariations(updatedClient);
             _clients.ReplaceOne(client => client.Id == updatedClient.Id, updatedClient);
         }
 
@@ -49,25 +52,6 @@ namespace APIRestCustomSales.Services {
 
         public List<Product> GetProducts() {
             return _products.Find(product => true).ToList();
-        }
-
-        private Client CalculatePriceVariations(Client client) {
-            if (client.VisibleProducts == null) {
-                var products = GetById(client.Id).VisibleProducts;
-                client.VisibleProducts = products;
-            }
-
-            foreach (Product product in GetProducts()) {
-                Product availableProduct = client.VisibleProducts.Find(visibleProduct => visibleProduct.Id == product.Id);
-                if (availableProduct != null) {
-                    if (client.PriceVariation != 0d) {
-                        availableProduct.Price = Math.Round(product.Price * (1 + client.PriceVariation / 100), 2);
-                    } else {
-                        availableProduct.Price = product.Price;
-                    }
-                }
-            }
-            return client;
         }
     }
 }
