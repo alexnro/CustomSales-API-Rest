@@ -45,7 +45,11 @@ namespace APIRestCustomSales.Controllers {
         [AllowAnonymous]
         [HttpPost("createPassword")]
         public ActionResult<User> CreatePassword(LoginUser loginUser) {
-            return _usersService.HandleCreatePassword(loginUser);
+            var user = _usersService.HandleCreatePassword(loginUser);
+            if (user == null) {
+                return StatusCode(302);
+            }
+            return user;
         }
 
         [HttpPost("authenticate")]
