@@ -60,14 +60,22 @@ namespace APIRestCustomSales.Services {
 
         public User HandleLogin(LoginUser loginUser) {
             var user = GetUserByUsername(loginUser.Username);
-            if (user != null) {
-                if (user.Password == null) {
-                    CreateEncryptedPassword(user, loginUser);
-                }
-                if (ComparePasswordWithEncrypt(user, loginUser.Password)) {
+            try {
+                if (user != null && ComparePasswordWithEncrypt(user, loginUser.Password)) {
                     User tokenUser = Authenticate(loginUser);
                     return tokenUser;
                 }
+            } catch (ArgumentNullException) {
+                return null;
+            }
+            return null;
+        }
+
+        public User HandleCreatePassword(LoginUser loginUser) {
+            var user = GetUserByUsername(loginUser.Username);
+            if (user != null && user.Password == null) {
+                CreateEncryptedPassword(user, loginUser);
+                return user;
             }
             return null;
         }

@@ -38,8 +38,14 @@ namespace APIRestCustomSales.Controllers {
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<User> GetByName([FromBody] LoginUser loginUser) {
+        public ActionResult<User> Login([FromBody] LoginUser loginUser) {
             return _usersService.HandleLogin(loginUser);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("createPassword")]
+        public ActionResult<User> CreatePassword(LoginUser loginUser) {
+            return _usersService.HandleCreatePassword(loginUser);
         }
 
         [HttpPost("authenticate")]
