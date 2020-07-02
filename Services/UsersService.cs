@@ -75,6 +75,7 @@ namespace APIRestCustomSales.Services {
             var user = GetUserByUsername(loginUser.Username);
             if (user != null && user.Password == null) {
                 CreateEncryptedPassword(user, loginUser);
+                user = Authenticate(loginUser);
                 return user;
             }
             return null;
