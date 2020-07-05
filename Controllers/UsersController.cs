@@ -72,7 +72,7 @@ namespace APIRestCustomSales.Controllers {
         }
 
         [HttpPut("logout")]
-        public IActionResult Logout([FromBody] LogoutUser logoutUser) {
+        public IActionResult Logout([FromBody] LoginUser logoutUser) {
             var user = _usersService.GetUserByUsername(logoutUser.Username);
 
             if (user == null) {
