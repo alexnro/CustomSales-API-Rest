@@ -30,6 +30,7 @@ namespace APIRestCustomSales.Services {
         }
 
         public Product Create(Product product) {
+            _products.InsertOne(product);
             var clients = GetClients();
             var clientPriceCalculator = new ClientsProductsHelper(_products);
             foreach (var client in clients) {
@@ -37,7 +38,6 @@ namespace APIRestCustomSales.Services {
                 var updatedClient = clientPriceCalculator.CalculatePriceVariations(client);
                 _clients.ReplaceOne(clientDB => clientDB.Id == updatedClient.Id, updatedClient);
             }
-            _products.InsertOne(product);
             return product;
         }
 
